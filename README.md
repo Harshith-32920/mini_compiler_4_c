@@ -126,3 +126,73 @@ Each team member is responsible for a specific phase of the compiler. Below is t
 - **Modular Design**: Each phase is a separate Python module (`lex.py`, `parser.py`, etc.).
 - **Extensible**: New operators can be added by simply updating the Lexer and ICG logic.
 - **Educational**: Designed to demonstrate the exact workflow taught in Compiler Design courses.
+
+---
+
+## 📊 Sample Test Case & Output
+
+**Input**: `y <- 10 + 20 / 4 @ 2`
+
+```text
+LEXICAL ANALYSIS TABLE
+
+Index     Token Type     Lexeme         
+----------------------------------------
+0         NUMBER         10             
+1         OPERATOR       +              
+2         NUMBER         20             
+3         OPERATOR       /              
+4         NUMBER         4              
+5         OPERATOR       @              
+6         NUMBER         2              
+
+--- PARSER OUTPUT (AST) ---
+ <-__       
+/    \      
+y    +__    
+    /   \   
+   10   /_  
+       /  \ 
+      20  @ 
+         / \
+         4 2
+
+--- SEMANTIC ANALYSIS ---
+Validation Successful: No errors found.
+
+--- ORIGINAL TAC ---
+Step      Instruction
+---------------------------------------------
+1         t1 = 4 * 4
+2         t2 = 2 * 2
+3         t3 = t1 + t2
+4         t4 = 20 / t3
+5         t5 = 10 + t4
+6         y = t5
+
+--- OPTIMIZED TAC ---
+Step      Instruction
+---------------------------------------------
+1         t3 = 16 + 4
+2         t4 = 20 / t3
+3         t5 = 10 + t4
+4         y = t5
+
+--- TARGET CODE (PSEUDO ASSEMBLY) ---
+Step      Instruction
+---------------------------------------------
+1         LOAD 16
+2         ADD 4
+3         STORE t3
+
+4         LOAD 20
+5         DIV t3
+6         STORE t4
+
+7         LOAD 10
+8         ADD t4
+9         STORE t5
+
+10        LOAD t5
+11        STORE y
+```

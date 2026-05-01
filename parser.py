@@ -73,7 +73,7 @@ class Node:
 
 # ---------------- INFIX PARSER ---------------- #
 def infix_to_ast(tokens):
-    precedence = {'+':1, '-':1, '*':2, '/':2}
+    precedence = {'+':1, '-':1, '*':2, '/':2, '@':3, '#':3, '$':3, '^':3}
     output = []
     ops = []
 
