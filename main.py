@@ -70,6 +70,14 @@ def process_expression(expr):
         tokens = tokenize(expr)
         ast = infix_to_ast(tokens)
 
+    # ---------------- LEXER OUTPUT ---------------- #
+    print("\n--- LEXER OUTPUT (TOKENS) ---")
+    print(tokens)
+
+    # ---------------- PARSER OUTPUT (AST) ---------------- #
+    print("\n--- PARSER OUTPUT (AST) ---")
+    ast.display()
+
     # ---------------- SEMANTIC ---------------- #
     sem = SemanticAnalyzer()
 
@@ -82,6 +90,8 @@ def process_expression(expr):
         sem.declare(left)
 
     sem.check(ast)
+    print("\n--- SEMANTIC ANALYSIS ---")
+    print("Validation Successful: No errors found.")
 
     # ---------------- ICG ---------------- #
     icg = IntermediateCodeGenerator()
