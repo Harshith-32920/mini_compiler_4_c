@@ -48,10 +48,11 @@
 
 
 
-from parser import tokenize, infix_to_ast, Node
+from parser import infix_to_ast, Node
 from semantic import SemanticAnalyzer
 from icg import IntermediateCodeGenerator
 from optimizer import CodeOptimizer
+from lex import lexical_analyzer, print_table as print_lex_table
 
 def process_expression(expr):
     print("\nINPUT:", expr)
@@ -62,17 +63,18 @@ def process_expression(expr):
         left = left.strip()
         right = right.strip()
 
-        tokens = tokenize(right)
+        full_tokens = lexical_analyzer(right)
+        tokens = [t[1] for t in full_tokens]
         ast = infix_to_ast(tokens)
 
         ast = Node("<-", Node(left), ast)
     else:
-        tokens = tokenize(expr)
+        full_tokens = lexical_analyzer(expr)
+        tokens = [t[1] for t in full_tokens]
         ast = infix_to_ast(tokens)
 
     # ---------------- LEXER OUTPUT ---------------- #
-    print("\n--- LEXER OUTPUT (TOKENS) ---")
-    print(tokens)
+    print_lex_table(full_tokens)
 
     # ---------------- PARSER OUTPUT (AST) ---------------- #
     print("\n--- PARSER OUTPUT (AST) ---")
