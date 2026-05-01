@@ -1,6 +1,22 @@
 # 🚀 XLang: A Multi-Phase Compiler Implementation
 
 **XLang** is a modular compiler built to demonstrate the core principles of Compiler Design. It translates high-level expressions into optimized pseudo-assembly through a structured 6-phase pipeline.
+---
+## 👥 Team
+
+| S.No | Name | Roll Number |
+|------|------|-------------|
+| 1 | K. Adithya | 160123733189 |
+| 2 | K.G.S Karthekeya| 160123733190 |
+| 3 | M Harshith | 160123733191 |
+| 4 | Majji Pradeep | 160123733192 |
+| 5 | S. Aryan | 160123733202 |
+
+| Field | Details |
+|-------|---------|
+| 🎓 Guide | Dr. G. Vanitha |
+| 🏫 College | Chaitanya Bharathi Institute of Technology (CBIT), Hyderabad |
+| 📅 Year | 2025–2026 |
 
 ---
 
