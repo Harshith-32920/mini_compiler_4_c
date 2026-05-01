@@ -100,6 +100,9 @@ def process_expression(expr):
     # ---------------- PASS TO CODEGEN ---------------- #
     optimized_code = optimizer.code
 
+    from codegen import generate_code
+    generate_code(optimized_code)
+
     return optimized_code
 
 
@@ -114,11 +117,6 @@ if __name__ == "__main__":
             break
 
         try:
-            optimized_code = process_expression(expr)
-
-            # Later: pass this to codegen
-            # from codegen import generate_code
-            # generate_code(optimized_code)
-
+            process_expression(expr)
         except Exception as e:
             print("Error:", e)
