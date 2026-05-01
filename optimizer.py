@@ -134,7 +134,8 @@ class CodeOptimizer:
             left, right = map(str.strip, line.split("="))
             tokens = right.split()
 
-            if left in used or left.startswith("t"):
+            # Keep if it's a user variable (not starting with 't') or if it's a used temp
+            if not left.startswith("t") or left in used:
                 new_code.append(line)
                 used.update(tokens)
 

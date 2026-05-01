@@ -1,185 +1,112 @@
-# mini_compiler_4_c
-From C to assembly: a mini compiler implementing lexical analysis, parsing, and code generation.
-# 🛠️ Mini C Compiler (Lexical Analysis → Assembly)
+# 🚀 XLang: A Multi-Phase Compiler Implementation
 
-A **Mini C Compiler** built from scratch that translates a subset of C language into simple assembly-like instructions (`LOAD`, `ADD`, `MUL`, `STORE`).
-
-This project focuses on understanding core compiler design phases including **Lexical Analysis, Parsing, and Code Generation**.
+**XLang** is a modular compiler built to demonstrate the core principles of Compiler Design. It translates high-level expressions into optimized pseudo-assembly through a structured 6-phase pipeline.
 
 ---
 
-## 🚀 Features
+## 🌳 Compiler Architecture Flow
 
-* 🔍 Lexical Analyzer (Tokenizer)
+```mermaid
+graph TD
+    Input[Input Expression] --> Lexer[Lexical Analyzer]
+    Lexer -- Tokens --> Parser[Syntax Analyzer]
+    Parser -- AST --> Semantic[Semantic Analyzer]
+    Semantic -- Valid AST --> ICG[Intermediate Code Gen]
+    ICG -- TAC --> Optimizer[Code Optimizer]
+    Optimizer -- Optimized TAC --> CodeGen[Target Code Gen]
+    CodeGen --> Output[Pseudo Assembly]
+```
 
-  * पहचान (identifies) keywords, identifiers, numbers
-  * Handles operators (`+ - * / = == !=`)
-  * Supports delimiters (`; , ( ) { }`)
-  * Ignores comments (`//`, `/* */`)
-  * Tracks line numbers for error reporting
+---
 
-* 🌳 Syntax Analysis (Parser) *(planned / optional depending on your progress)*
+## 👥 Phase-by-Phase Detailed Breakdown
 
-  * Recursive Descent Parser
-  * Builds Abstract Syntax Tree (AST)
+Each team member is responsible for a specific phase of the compiler. Below is the detailed technical content for each phase.
 
-* ⚙️ Intermediate Representation (IR)
+---
 
-  * Converts expressions into 3-address code
+### 🧩 Phase 1: Lexical Analysis (Harshith)
+**Responsibility**: Converting raw source code (strings) into a sequence of meaningful tokens.
 
-* ⚡ Code Generation
+- **How it works**: Uses **Regular Expressions (Regex)** to scan the input string character by character.
+- **Tokens Handled**:
+    - **Assignment**: `<-`
+    - **Arithmetic**: `+`, `-`, `*`, `/`
+    - **Custom Operators**: `@` (Sum of Squares), `#`, `$`, `^`
+    - **Literals**: Integers and Floating point numbers.
+    - **Identifiers**: Variable names.
+- **Key Implementation**: The `lex.py` module uses a list of regex patterns. When a match is found, it creates a tuple `(Index, Type, Lexeme)`.
+- **Presentation Point**: *"My job is to ignore whitespace and comments and group characters into logical units called tokens. Without this, the compiler wouldn't understand what 'x' or '+' means."*
 
-  * Outputs simple assembly instructions:
+---
 
+### 🌳 Phase 2: Syntax & Semantic Analysis (Karthikeya)
+**Responsibility**: Building a structural representation (AST) and validating the logic.
+
+- **Syntax Analysis**: Implements a **Recursive Descent Parser**. It follows the grammar rules to handle operator precedence (e.g., `*` before `+`).
+- **Data Structure**: Builds an **Abstract Syntax Tree (AST)**.
+    - *Example*: `a + b * c` creates a tree where `+` is the root, `a` is the left child, and `*` is the right child.
+- **Semantic Analysis**: Walks the AST to ensure:
+    - Variables are declared before use.
+    - Operand types are compatible (e.g., you can't add a string to a number).
+- **Presentation Point**: *"I ensure the code follows the 'grammar rules' of XLang. If the user writes '5 + + 2', my parser will catch the syntax error. I also check the 'meaning' to ensure variables actually exist."*
+
+---
+
+### ⚙️ Phase 3: Intermediate Code Generation (Adithya)
+**Responsibility**: Flattening the hierarchical AST into a linear instruction set.
+
+- **Method**: Converts the AST into **3-Address Code (TAC)**.
+- **Logic**: Every complex expression is broken down into simple operations involving at most three addresses (two operands and one result).
+- **Temporary Variables**: Uses `t1`, `t2`, `t3`... to store intermediate values.
+- **Special Operators**: If a custom operator like `@` (sum of squares) is encountered, ICG expands it into:
+    ```text
+    t1 = a * a
+    t2 = b * b
+    t3 = t1 + t2
     ```
-    LOAD R1, 5
-    LOAD R2, 3
-    ADD R3, R1, R2
-    STORE a, R3
-    ```
+- **Presentation Point**: *"ICG acts as a bridge. Machines can't execute trees directly, so I flatten the logic into a list of simple 't = a op b' steps that are much closer to assembly."*
 
 ---
 
-## 🧠 Compiler Architecture
+### 🚀 Phase 4: Code Optimization (Aaryan)
+**Responsibility**: Improving the intermediate code for better performance.
 
-```
-C Source Code
-     ↓
-[ Lexical Analyzer ]
-     ↓
-Tokens
-     ↓
-[ Parser ]
-     ↓
-Abstract Syntax Tree (AST)
-     ↓
-[ Intermediate Code ]
-     ↓
-[ Code Generator ]
-     ↓
-Assembly Code
-```
+- **Techniques Implemented**:
+    1. **Constant Folding**: Pre-calculating results like `2 + 3` into `5` at compile-time.
+    2. **Copy Propagation**: If `a = b`, replacing future uses of `a` with `b` to save assignments.
+    3. **Dead Code Elimination**: Removing instructions whose results are never used.
+- **Result**: The code becomes shorter and faster without changing the final output.
+- **Presentation Point**: *"My phase makes the compiler 'smart'. Instead of making the computer calculate '10 / 2' every time the program runs, I do it once during compilation to save CPU time."*
 
 ---
 
-## 📂 Project Structure
+### 🖥️ Phase 5: Target Code Generation & Integration (Pradeep)
+**Responsibility**: Generating the final "machine" code and orchestrating the system.
 
-```
-mini-c-compiler/
-│
-├── lexer.py          # Lexical Analyzer
-├── parser.py         # Parser (if implemented)
-├── codegen.py        # Assembly Code Generator
-├── tokens.py         # Token definitions
-├── sample.c          # Sample input program
-└── README.md
-```
-
----
-
-## 🧪 Sample Input
-
-```c
-int a = 5 + 3;
-```
-
-## 🔍 Token Output
-
-```
-(KEYWORD, int)
-(IDENTIFIER, a)
-(OPERATOR, =)
-(NUMBER, 5)
-(OPERATOR, +)
-(NUMBER, 3)
-(DELIMITER, ;)
-```
-
-## ⚡ Generated Assembly
-
-```
-LOAD R1, 5
-LOAD R2, 3
-ADD R3, R1, R2
-STORE a, R3
-```
+- **Target Language**: **Pseudo-Assembly**.
+- **Model**: Uses an accumulator-based architecture.
+- **Instruction Set**:
+    - `LOAD [var]`: Move value to accumulator.
+    - `ADD/SUB/MUL/DIV [var]`: Perform math with accumulator.
+    - `STORE [var]`: Move result from accumulator to memory.
+- **System Integration**: I created `main.py` which pipes the output of the Lexer into the Parser, then into Semantic, ICG, Optimizer, and finally CodeGen.
+- **Presentation Point**: *"I translate the abstract logic into physical instructions. I also integrated everyone's work into a single pipeline so that a user can simply type an expression and see the final execution."*
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ How to Run & Present
 
-* Language: **Python**
-* Concepts: Compiler Design, Finite State Machines, Parsing, AST
-
----
-
-## ▶️ How to Run
-
-1. Clone the repository:
-
+1. **Execution**:
    ```bash
-   git clone https://github.com/your-username/mini-c-compiler.git
-   cd mini-c-compiler
+   python3 main.py
    ```
-
-2. Run the lexer:
-
-   ```bash
-   python lexer.py
-   ```
-
-3. Modify `sample.c` to test different inputs.
+2. **Standard Test Case**: `x <- a + 5 * 2`
+3. **Complex Test Case**: `y <- 10 + 20 / 4 @ 2`
 
 ---
 
-## 📌 Supported Grammar (Current Scope)
-
-```
-declaration → int identifier = expression ;
-expression  → term ((+|-) term)*
-term        → factor ((*|/) factor)*
-factor      → NUMBER | IDENTIFIER
-```
-
----
-
-## ⚠️ Limitations
-
-* Supports only a subset of C
-* No pointers, arrays, or structs
-* Limited error recovery
-* Basic assembly output (educational purpose)
-
----
-
-## 🎯 Learning Outcomes
-
-* Understood how compilers tokenize source code
-* Implemented a lexer using state-based scanning
-* Built foundational knowledge of parsing and AST
-* Learned how high-level code translates to low-level instructions
-
----
-
-## 🔮 Future Improvements
-
-* Add support for:
-
-  * Floating-point numbers
-  * Strings
-  * Control structures (`if`, `while`)
-* Improve error handling
-* Optimize generated assembly
-* Add symbol table
-
----
-
-## 👨‍💻 Author
-
-**Medari Harshith**
-
----
-
-## ⭐ Acknowledgment
-
-This project is inspired by core principles of compiler design and simplified implementations similar to tools like Lex and Yacc.
+## 🌟 Technical Highlights
+- **Modular Design**: Each phase is a separate Python module (`lex.py`, `parser.py`, etc.).
+- **Extensible**: New operators can be added by simply updating the Lexer and ICG logic.
+- **Educational**: Designed to demonstrate the exact workflow taught in Compiler Design courses.
