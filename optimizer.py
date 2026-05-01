@@ -1,12 +1,13 @@
 class CodeOptimizer:
     def __init__(self, code):
-        self.code = code
+        self.code = code #When object is created, input code is stored in self.code
 
     # ---------------- UTIL ---------------- #
     def is_number(self, x):
-        return x.isdigit()
+        return x.isdigit() #Checks whether token is a number or not.
 
-    # ---------------- 1. CONSTANT FOLDING ---------------- #
+
+    # ---------------- 1. CONSTANT FOLDING ---------------- #If both operands are constants, calculate result during compile time.
     def constant_folding(self):
         new_code = []
 
@@ -34,7 +35,7 @@ class CodeOptimizer:
 
         self.code = new_code
 
-    # ---------------- 2. CONSTANT PROPAGATION ---------------- #
+    # ---------------- 2. CONSTANT PROPAGATION ---------------- #Replace variables with known constant values.
     def constant_propagation(self):
         constants = {}
         new_code = []
@@ -56,7 +57,8 @@ class CodeOptimizer:
 
         self.code = new_code
 
-    # ---------------- 3. COPY PROPAGATION ---------------- #
+    # ---------------- 3. COPY PROPAGATION ---------------- #Remove unnecessary copied variables.
+    #If one variable only copies another variable, later uses of that variable are replaced directly with the original variable.
     def copy_propagation(self):
         copies = {}
         new_code = []
@@ -65,9 +67,9 @@ class CodeOptimizer:
             left, right = map(str.strip, line.split("="))
             tokens = right.split()
 
-            tokens = [copies.get(t, t) for t in tokens]
+            tokens = [copies.get(t, t) for t in tokens]#If token exists in copies, replace it with original variable.
 
-            if len(tokens) == 1 and tokens[0].startswith("t"):
+            if len(tokens) == 1 and tokens[0].startswith("t"): #Store Copy Assignment
                 copies[left] = tokens[0]
 
             new_code.append(f"{left} = {' '.join(tokens)}")
@@ -107,7 +109,8 @@ class CodeOptimizer:
 
         self.code = new_code
 
-    # ---------------- 5. COMMON SUBEXPRESSION ELIMINATION ---------------- #
+    # ---------------- 5. COMMON SUBEXPRESSION ELIMINATION ---------------- #If same expression repeated, calculate once and reuse.
+
     def common_subexpression_elimination(self):
         expr_map = {}
         new_code = []
@@ -124,7 +127,7 @@ class CodeOptimizer:
 
         self.code = new_code
 
-    # ---------------- 6. DEAD CODE ELIMINATION ---------------- #
+    # ---------------- 6. DEAD CODE ELIMINATION ---------------- #Removes instructions whose result is never used.
     def dead_code_elimination(self):
         used = set()
         new_code = []
